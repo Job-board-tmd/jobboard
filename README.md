@@ -41,7 +41,6 @@
     - id 
     - name
     - email
-    - imageUrl
     - createdAT
     - updatedAt
 
