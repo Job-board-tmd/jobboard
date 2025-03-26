@@ -1,11 +1,12 @@
 import jobModel from "../model/job.model.js";
 
 const getAllJobs = async (req,res) => {
-    const jobs = await jobModel.find();
-    res.send({
-        message: "success",
-        data: jobs
-    })
+    // const jobs = await jobModel.find();
+    // res.send({
+    //     message: "success",
+    //     data: jobs
+    // })
+    res.render("index");
 };
 
 const getOneJobs = async (req,res) => {
@@ -29,7 +30,7 @@ const getOneJobs = async (req,res) => {
         message: "success",
         data: job
     });
-}
+};
 
 const createJobs = async (req,res) => {
     const { name } = req.body;
@@ -95,6 +96,6 @@ const deleteJobs = async (req,res) => {
         message: "success",
         data: job
     });
-}
+};
 
 export default { getAllJobs, createJobs, updateJobs, deleteJobs, getOneJobs }; 
