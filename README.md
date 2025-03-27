@@ -30,7 +30,7 @@
 2. Company:
     - id 
     - name
-    - price
+    - salary
     - description
     - imageUrl
     - job_id

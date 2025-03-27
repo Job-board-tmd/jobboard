@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose";
 import jobModel from "../model/job.model.js";
 
 const getAllJobs = async (req,res) => {
@@ -8,10 +9,15 @@ const getAllJobs = async (req,res) => {
                 message:"limit and page must be number"
             })
         };
+        if (limit <= 0 || page <= 0) {
+            return res.status(400).send({
+                message: "Limit and page must be positive numbers.",
+            });
+        }
         const possibleFields = ["_id", "name", "createdAt","updatedAt"];
         const possibleSorts = [1, -1]
         if (
-            !(
+            !(            
                 possibleFields.includes(orderField) &&
                 possibleSorts.includes(Number(orderSort))
             )
@@ -43,7 +49,7 @@ const getOneJobs = async (req,res) => {
     try {
         const { id } = req.params;
 
-        if(!(id)){
+        if(!(isValidObjectId(id))){
             return res.status(400).send({
                 message: `Given id: ${id} is not valid`
             });
@@ -68,9 +74,9 @@ const getOneJobs = async (req,res) => {
 
 const createJobs = async (req,res) => {
     try {
-        const { name } = req.body;
+        const { name,salary,companyId } = req.body;
 
-        const foundedJobs = await jobModel.findOne({ name });
+        const foundedJobs = await jobModel.findOne({ name },{salary:1});
     
         if (foundedJobs) {
             return res.status(409).send({
@@ -78,7 +84,7 @@ const createJobs = async (req,res) => {
             });
         }
     
-        const job = await jobModel.create({ name })
+        const job = await jobModel.create({ name,salary,companyId })
     
         res.send({
             message: "success",
@@ -92,15 +98,15 @@ const createJobs = async (req,res) => {
 const updateJobs = async (req,res) => {
     try {
         const { id } = req.params;
-        const { name } = req.body;
+        const { name,salary,companyId } = req.body;
     
-        if(!(id)){
+        if(!(isValidObjectId(id))){
             return res.status(400).send({
                 message: `Given id: ${id} is not valid`
             });
         };
     
-        const job = await jobModel.findByIdAndUpdate(id, { name }, { new: true });
+        const job = await jobModel.findByIdAndUpdate(id, { name ,salary,companyId}, { new: true });
     
         if(!job){
             return res.status(404).send({
@@ -121,7 +127,7 @@ const deleteJobs = async (req,res) => {
     try {
         const { id } = req.params;
 
-        if(!(id)){
+        if(!(isValidObjectId(id))){
             return res.status(400).send({
                 message: `Given id: ${id} is not valid`
             });
