@@ -7,7 +7,6 @@ const getAllJobs = async (req, res) => {
     //     data: jobs
     // })
     res.render("index");
-    // res.render("menu")
 };
 
 const getOneJobs = async (req, res) => {
