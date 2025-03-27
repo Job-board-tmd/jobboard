@@ -24,15 +24,13 @@
 1. Job:
     - id
     - name
+    - salary
     - createdAt
     - updatedAt
 
 2. Company:
     - id 
     - name
-    - salary
-    - description
-    - imageUrl
     - job_id
     - createdAt
     - updatedAt
