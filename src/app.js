@@ -18,7 +18,9 @@ app.set("views",path.join(__dirname,"views"))
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api",router)
-
+app.use("/register",(req,res) => {
+    res.render("menu")
+})
 app.all("/*",(req,res) => {
     res.send({
         message:`Given url: ${req.url} and method : ${req.method} not found`
