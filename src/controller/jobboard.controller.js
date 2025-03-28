@@ -1,16 +1,6 @@
 import { isValidObjectId } from "mongoose";
 import jobModel from "../model/job.model.js";
 
-<<<<<<< HEAD
-const getAllJobs = async (req, res) => {
-    // const jobs = await jobModel.find();
-    // res.send({
-    //     message: "success",
-    //     data: jobs
-    // })
-    res.render("index");
-};
-=======
 const getAllJobs = async (req,res) => {
     try {
         const {limit=10,page=1,orderField = "_id",orderSort = 1} = req.query;
@@ -37,7 +27,6 @@ const getAllJobs = async (req,res) => {
             });
         }
         const totalJobs = await jobModel.countDocuments();
->>>>>>> 1dd77c3fee7715252de32f66cd0e1cf45d029080
 
         const jobs = await jobModel.find()
             .sort({ [orderField]: Number(orderSort) })
