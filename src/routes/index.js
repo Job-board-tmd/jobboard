@@ -9,7 +9,6 @@ const router = Router();
 router.use("/jobs",jobRouter);
 router.use("/companies",companyRouter);
 router.use("/cves",cvRouter);
-router.use("/jobs", jobRouter);
 router.use("/users", userRouter);
 
 export default router;

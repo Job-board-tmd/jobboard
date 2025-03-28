@@ -12,12 +12,12 @@ const UserSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-        imageUrl: {
+        password: {
             type: mongoose.SchemaTypes.String,
-            required: true,
+            required: true
         },
         jobId: {
-            type: mongoose.SchemaTypes.String,
+            type: mongoose.SchemaTypes.ObjectId,
             ref: "Job",
         },
     },
