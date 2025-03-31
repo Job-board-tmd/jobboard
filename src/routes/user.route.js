@@ -7,6 +7,7 @@ const userRoute = Router();
 
 userRoute
     .get("/", userController.getAllUsers)
+    // .get("/register",userController.redirectRegister)
     .post("/register",
         ValidationMiddleware(registerUser),
         userController.register)

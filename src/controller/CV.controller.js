@@ -1,29 +1,24 @@
 import { isValidObjectId } from "mongoose";
 import cvModel from "../model/cv.model.js";
+import { BaseException } from "../exception/base.exception.js";
 
-const getAllCVs = async (req, res) => {
+const getAllCVs = async (req, res,next) => {
     try {
         const { limit = 10, page = 1, orderField = "_id", orderSort = 1 } = req.query;
 
         if (!(Number(limit) && Number(page))) {
-            return res.status(400).send({
-                message: "limit and page must be numbers"
-            })
+            throw new BaseException("limit and page must be numbers",400)
         };
 
         if (limit <= 0 || page <= 0) {
-            return res.status(400).send({
-                message: "manfiy son bo'lmasligi kk",
-            });
+            throw new BaseException("manfiy son bo'lmasligi kk",400);
         }
 
         const possibleFields = ["_id", "userId", "title", "createdAt", "updatedAt"];
         const possibleSorts = [1, -1];
 
         if (!(possibleFields.includes(orderField) && possibleSorts.includes(Number(orderSort)))) {
-            return res.status(400).send({
-                message: "OrderField yoki orderSortdan bittasi xato",
-            })
+            throw new BaseException("OrderField yoki orderSortdan bittasi xato",400)
         };
 
         const totalCVs = await cvModel.countDocuments();
@@ -41,28 +36,21 @@ const getAllCVs = async (req, res) => {
             page: Number(page)
         });
     } catch (error) {
-        console.log(error.message);
-        res.status(400).send({
-            message: "Xatolik"
-        });
+        next(error)
     }
 };
-const getOneCV = async (req, res) => {
+const getOneCV = async (req, res,next) => {
     try {
         const { id } = req.params
 
         if (!(isValidObjectId(id))) {
-            return res.status(400).send({
-                message: `given id: ${id} is not valid`
-            })
+            throw new BaseException(`given id: ${id} is not valid`,400)
         }
 
         const cv = await cvModel.findById(id);
 
         if (!cv) {
-            return res.status(404).send({
-                message: `CV with id: ${id} not found`
-            });
+            throw new BaseException(`CV with id: ${id} not found`,404);
         }
 
         res.send({
@@ -70,28 +58,21 @@ const getOneCV = async (req, res) => {
             data: cv
         });
     } catch (error) {
-        console.log(error.message);
-        res.status(400).send({
-            message: "xatolik"
-        });
+        next(error)
     }
 };
-const createCV = async (req, res) => {
+const createCV = async (req, res,next) => {
     try {
         const { userId, title, content } = req.body;
 
         if (!userId || !title || !content) {
-            return res.status(400).send({
-                message: "o'zgaruvchilarni hammasi kiritilsin"
-            });
+            throw new BaseException("o'zgaruvchilarni hammasi kiritilsin",400);
         }
 
         const existingCV = await cvModel.findOne({ userId });
 
         if (existingCV) {
-            return res.status(409).send({
-                message: `CV for userId: ${userId} already exists`,
-            });
+            throw new BaseException(`CV for userId: ${userId} already exist`,409);
         }
 
         const cv = await cvModel.create({ userId, title, content });
@@ -101,28 +82,21 @@ const createCV = async (req, res) => {
             data: cv
         });
     } catch (error) {
-        console.log(error.message);
-        res.status(400).send({
-            message: "xatolik"
-        });
+        next(error)
     }
 }
-const updateCV = async (req, res) => {
+const updateCV = async (req, res,next) => {
     try {
         const { id } = req.params;
         const { title, content } = req.body;
 
         if (!(isValidObjectId(id))) {
-            return res.status(400).send({
-                message: `Given id: ${id} is not valid`
-            });
+            throw new BaseException(`Given id: ${id} is not valid`,400);
         }
         const updatedCV = await cvModel.findByIdAndUpdate(id, { title, content }, { new: true });
 
         if (!updatedCV) {
-            return res.status(404).send({
-                message: `CV with id: ${id} not found`
-            });
+            throw new BaseException(`CV with id: ${id} not found`,404);
         }
 
         res.send({
@@ -130,26 +104,19 @@ const updateCV = async (req, res) => {
             data: updatedCV
         });
     } catch (error) {
-        console.log(error.message);
-        res.status(400).send({
-            message: "xatolik"
-        });
+        next(error)
     }
 };
-const deleteCV = async (req, res) => {
+const deleteCV = async (req, res,nex) => {
     try {
         const { id } = req.params;
 
         if (!(isValidObjectId(id))) {
-            return res.status(400).send({
-                message: `Given id: ${id} is not valid`
-            });
+            throw new BaseException(`Given id: ${id} is not valid`,400);
         }
         const deletedCV = await cvModel.findByIdAndDelete(id);
         if (!deletedCV) {
-            return res.status(404).send({
-                message: `CV with id: ${id} not found`
-            })
+            throw new BaseException(`CV with id: ${id} not found`,404)
         }
 
         res.send({
@@ -157,10 +124,7 @@ const deleteCV = async (req, res) => {
             data: deletedCV
         });
     } catch (error) {
-        console.log(error.message);
-        res.status(400).send({
-            message: "xatolik"
-        })
+        next(error)
     }
 };
 

@@ -1,7 +1,8 @@
 import { isValidObjectId } from "mongoose";
 import jobModel from "../model/job.model.js";
+import { BaseException } from "../exception/base.exception.js";
 
-const getAllJobs = async (req,res) => {
+const getAllJobs = async (req,res,next) => {
     try {
         const {limit=10,page=1,orderField = "_id",orderSort = 1} = req.query;
         if(!(Number(limit) && Number(page))){
@@ -10,9 +11,7 @@ const getAllJobs = async (req,res) => {
             })
         };
         if (limit <= 0 || page <= 0) {
-            return res.status(400).send({
-                message: "Limit and page must be positive numbers.",
-            });
+            throw new BaseException("Limit and page must be positive numbers.",400);
         }
         const possibleFields = ["_id", "name", "createdAt","updatedAt"];
         const possibleSorts = [1, -1]
@@ -22,9 +21,7 @@ const getAllJobs = async (req,res) => {
                 possibleSorts.includes(Number(orderSort))
             )
         ) {
-            return res.status(400).send({
-                message: "sorttype yoki sortfielddan biri xato berildi",
-            });
+            throw new BaseException("sorttype yoki sortfielddan biri xato berildi",400);
         }
         const totalJobs = await jobModel.countDocuments();
 
@@ -41,26 +38,22 @@ const getAllJobs = async (req,res) => {
             page: Number(page)
         })
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 };
 
-const getOneJobs = async (req,res) => {
+const getOneJobs = async (req,res,next) => {
     try {
         const { id } = req.params;
 
         if(!(isValidObjectId(id))){
-            return res.status(400).send({
-                message: `Given id: ${id} is not valid`
-            });
+            throw new BaseException(`Given id: ${id} is not valid`,400);
         };
     
         const job = await jobModel.findById(id);
     
         if(!job){
-            return res.status(404).send({
-                message: `Job with id: ${id} not found`
-            });
+            throw new BaseException(`Job with id: ${id} not found`,404);
         };
         
         res.send({
@@ -68,20 +61,18 @@ const getOneJobs = async (req,res) => {
             data: job
         });
     } catch (error) {
-       console.log(error.message) 
+       next(error)
     }
 }
 
-const createJobs = async (req,res) => {
+const createJobs = async (req,res,next) => {
     try {
         const { name,salary,companyId } = req.body;
 
         const foundedJobs = await jobModel.findOne({ name },{salary:1});
     
         if (foundedJobs) {
-            return res.status(409).send({
-                message: `Job: ${name} allaqachon mavjud`,
-            });
+            throw new BaseException(`Job: ${name} allaqachon mavjud`,409);
         }
     
         const job = await jobModel.create({ name,salary,companyId })
@@ -91,27 +82,23 @@ const createJobs = async (req,res) => {
             data: job
         })
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 };
 
-const updateJobs = async (req,res) => {
+const updateJobs = async (req,res,next) => {
     try {
         const { id } = req.params;
         const { name,salary,companyId } = req.body;
     
         if(!(isValidObjectId(id))){
-            return res.status(400).send({
-                message: `Given id: ${id} is not valid`
-            });
+            throw new BaseException(`Given id: ${id} is not valid`,400);
         };
     
         const job = await jobModel.findByIdAndUpdate(id, { name ,salary,companyId}, { new: true });
     
         if(!job){
-            return res.status(404).send({
-                message: `Job with id: ${id} not found`
-            });
+            throw new BaseException(`Job with id: ${id} not found`,404);
         };
     
         res.send({
@@ -119,26 +106,22 @@ const updateJobs = async (req,res) => {
             data: job
         });
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 };
 
-const deleteJobs = async (req,res) => {
+const deleteJobs = async (req,res,next) => {
     try {
         const { id } = req.params;
 
         if(!(isValidObjectId(id))){
-            return res.status(400).send({
-                message: `Given id: ${id} is not valid`
-            });
+            throw new BaseException(`Given id: ${id} is not valid`,400);
         };
     
         const job = await jobModel.findByIdAndDelete(id);
     
         if(!job){
-            return res.status(404).send({
-                message: `Job with id: ${id} not found`
-            });
+            throw new BaseException(`Job with id: ${id} not found`,404);
         };
     
         res.send({
@@ -146,7 +129,7 @@ const deleteJobs = async (req,res) => {
             data: job
         });
     } catch (error) {
-        console.log(error.message);
+        next(error)
     }
 }
 
