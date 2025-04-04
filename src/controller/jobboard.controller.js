@@ -2,43 +2,49 @@ import { isValidObjectId } from "mongoose";
 import jobModel from "../model/job.model.js";
 import { BaseException } from "../exception/base.exception.js";
 
-const getAllJobs = async (req,res,next) => {
+const getAllJobs = async (req, res, next) => {
     try {
-        const {limit=10,page=1,orderField = "_id",orderSort = 1} = req.query;
-        if(!(Number(limit) && Number(page))){
-            return res.status(400).send({
-                message:"limit and page must be number"
-            })
-        };
-        if (limit <= 0 || page <= 0) {
-            throw new BaseException("Limit and page must be positive numbers.",400);
-        }
-        const possibleFields = ["_id", "name", "createdAt","updatedAt"];
-        const possibleSorts = [1, -1]
-        if (
-            !(            
-                possibleFields.includes(orderField) &&
-                possibleSorts.includes(Number(orderSort))
-            )
-        ) {
-            throw new BaseException("sorttype yoki sortfielddan biri xato berildi",400);
-        }
-        const totalJobs = await jobModel.countDocuments();
+        const { limit = 10, page = 1, orderField = "_id", orderSort = 1, search } = req.query;
 
-        const jobs = await jobModel.find()
+        if (!(Number(limit) && Number(page))) {
+            return res.status(400).send({
+                message: "Limit and page must be numbers"
+            });
+        }
+
+        if (limit <= 0 || page <= 0) {
+            throw new BaseException("Limit and page must be positive numbers.", 400);
+        }
+
+        const possibleFields = ["_id", "name", "createdAt", "updatedAt"];
+        const possibleSorts = [1, -1];
+
+        if (!(possibleFields.includes(orderField) && possibleSorts.includes(Number(orderSort)))) {
+            throw new BaseException("Invalid sort type or field.", 400);
+        }
+
+        let query = {};
+
+        if (search && search.trim() !== '') {
+            query.name = { $regex: search.trim(), $options: 'i' }; // regex shunga o'xshagan so'zlarni olib keladi
+        }
+
+        const totalJobs = await jobModel.countDocuments(query);
+
+        const jobs = await jobModel.find(query)
             .sort({ [orderField]: Number(orderSort) })
-            .skip((page - 1)* limit) 
+            .skip((page - 1) * limit)
             .limit(Number(limit));
 
-        res.send({
-            message: "success",
+        res.render("jobs", {
             data: jobs,
             count: totalJobs,
             limit: Number(limit),
-            page: Number(page)
-        })
+            page: Number(page),
+        });
+
     } catch (error) {
-        next(error)
+        next(error);
     }
 };
 
@@ -69,10 +75,10 @@ const createJobs = async (req,res,next) => {
     try {
         const { name,salary,companyId } = req.body;
 
-        const foundedJobs = await jobModel.findOne({ name },{salary:1});
+        const foundedJobs = await jobModel.findOne({ name },{companyId:1});
     
         if (foundedJobs) {
-            throw new BaseException(`Job: ${name} allaqachon mavjud`,409);
+            throw new BaseException(`Job: ${name} company:${companyId} da allaqachon mavjud`,409);
         }
     
         const job = await jobModel.create({ name,salary,companyId })

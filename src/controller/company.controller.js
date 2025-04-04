@@ -27,7 +27,7 @@ const getAllCompanies = async (req,res,next) => {
             .sort({ [orderField]: Number(orderSort) })
             .skip((page - 1)* limit) 
             .limit(Number(limit))
-            .populate("Jobs");
+            .populate("companyId");
 
         res.send({
             message: "success",
@@ -39,7 +39,7 @@ const getAllCompanies = async (req,res,next) => {
     } catch (error) {
         next(error)
     }
-}
+};
 
 const getCompany = async (req,res,next) => {
     try {
@@ -62,18 +62,20 @@ const getCompany = async (req,res,next) => {
     } catch (error) {
         next(error)
     }
-}
+};
 
 const createCompany = async (req,res,next) => {
     try {
-        const {name} = req.body;
+        const {name,location} = req.body;
         const foundedCompanies = await companyModel.findOne({ name });
     
         if (foundedCompanies) {
             throw new BaseException(`company: ${name} allaqachon mavjud`,409);
         }
     
-        const company = await companyModel.create({name})
+        const company = await companyModel.create({name,
+            location,
+            imageUrl: req.file.filename})
         res.status(200).send({
             message:"success",
             data:company
@@ -81,7 +83,7 @@ const createCompany = async (req,res,next) => {
     } catch (error) {
         next(error)
     }
-}
+};
 
 const updateCompany = async (req,res,next) => {
     try {
@@ -91,8 +93,8 @@ const updateCompany = async (req,res,next) => {
             throw new BaseException(`Given id: ${id} is not valid`,400);
         };
 
-        const {name} = req.body;
-        const company = await companyModel.findByIdAndUpdate(id, { name }, { new: true });
+        const {name,location} = req.body;
+        const company = await companyModel.findByIdAndUpdate(id, { name,location }, { new: true });
         
         if(!company){
             throw new BaseException(`Given company: ${id} is not found`,400)
@@ -104,7 +106,7 @@ const updateCompany = async (req,res,next) => {
     } catch (error) {
         next(error)
     }
-}
+};
 
 const deleteCompany = async (req,res,next) => {
     try {
@@ -126,7 +128,7 @@ const deleteCompany = async (req,res,next) => {
     } catch (error) {
         next(error)
     }
-}
+};
 
 
 

@@ -16,6 +16,11 @@ const UserSchema = new mongoose.Schema(
             type: mongoose.SchemaTypes.String,
             required: true
         },
+        role: {
+            type: mongoose.SchemaTypes.String,
+            enum: ["VIEWER", "OWNER", "SUPER_ADMIN"],
+            default: "VIEWER",
+          },
         jobId: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: "Job",

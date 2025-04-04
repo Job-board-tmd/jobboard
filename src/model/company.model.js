@@ -6,10 +6,20 @@ const CompanySchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    Jobs: {
-        type: mongoose.SchemaTypes.Array,
+    location:{
+        type: mongoose.SchemaTypes.String,
+        required:true,
+    },
+    imageUrl: {
+        type: mongoose.SchemaTypes.String,
+        required: false,
+    },
+    Jobs: [
+    {
+        type: mongoose.SchemaTypes.ObjectId,
         ref:"Job"
     }
+    ]
 }, {
     collection: "companies",
     timestamps: true,

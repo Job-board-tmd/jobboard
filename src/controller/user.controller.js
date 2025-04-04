@@ -4,7 +4,7 @@ import { BaseException } from "../exception/base.exception.js";
 import jwt from "jsonwebtoken";
 import { ACCESS_TOKEN_EXPIRE_TIME, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_EXPIRE_TIME, REFRESH_TOKEN_SECRET } from "../config/jwt.config.js";
 
-const getAllUsers = async (_, res,next) => {
+const getAllUsers = async (_, res) => {
     const users = await userModel.find();
     res.send({
         message: "success",
@@ -35,7 +35,7 @@ const register = async (req,res,next) => {
     });
 
     const givenToken = jwt.sign(
-        {id: result.id},
+        {id: result.id,role: result.role},
         ACCESS_TOKEN_SECRET,
         {
             expiresIn:ACCESS_TOKEN_EXPIRE_TIME,
@@ -44,7 +44,7 @@ const register = async (req,res,next) => {
     );
 
     const refreshToken = jwt.sign(
-        {id: result.id},
+        {id: result.id,role: result.role},
         REFRESH_TOKEN_SECRET,
         {
             expiresIn:REFRESH_TOKEN_EXPIRE_TIME,
@@ -83,10 +83,32 @@ const login = async (req,res,next) => {
                 message:"Invalid password"
             })
         };
+
+        const givenToken = jwt.sign(
+            {id: foundedUser.id,role: foundedUser.role},
+            ACCESS_TOKEN_SECRET,
+            {
+                expiresIn:ACCESS_TOKEN_EXPIRE_TIME,
+                algorithm:"HS256"
+            }
+        );
+    
+        const refreshToken = jwt.sign(
+            {id: foundedUser.id,role: foundedUser.role},
+            REFRESH_TOKEN_SECRET,
+            {
+                expiresIn:REFRESH_TOKEN_EXPIRE_TIME,
+                algorithm:"HS256"
+            }
+        )
     
         res.send({
             message:"success",
-            data: foundedUser
+            data: foundedUser,
+            tokens: {
+                givenToken,
+                refreshToken
+            }
         })
     } catch (error) {
         next(error)

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const CVSchema = new mongoose.Schema({
     userId:{
-        type: mongoose.SchemaTypes.String,
+        type: mongoose.SchemaTypes.ObjectId,
         required: true,
         unique: true,
     },

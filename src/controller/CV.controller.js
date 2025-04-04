@@ -39,6 +39,7 @@ const getAllCVs = async (req, res,next) => {
         next(error)
     }
 };
+
 const getOneCV = async (req, res,next) => {
     try {
         const { id } = req.params
@@ -61,6 +62,7 @@ const getOneCV = async (req, res,next) => {
         next(error)
     }
 };
+
 const createCV = async (req, res,next) => {
     try {
         const { userId, title, content } = req.body;
@@ -84,7 +86,8 @@ const createCV = async (req, res,next) => {
     } catch (error) {
         next(error)
     }
-}
+};
+
 const updateCV = async (req, res,next) => {
     try {
         const { id } = req.params;
@@ -107,7 +110,8 @@ const updateCV = async (req, res,next) => {
         next(error)
     }
 };
-const deleteCV = async (req, res,nex) => {
+
+const deleteCV = async (req, res,next) => {
     try {
         const { id } = req.params;
 

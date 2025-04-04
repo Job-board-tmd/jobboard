@@ -5,7 +5,6 @@ const JobSchema = new mongoose.Schema(
         name: {
             type: mongoose.SchemaTypes.String,
             required: true,
-            unique: true,
         },
         salary: {
             type: mongoose.SchemaTypes.Number,
