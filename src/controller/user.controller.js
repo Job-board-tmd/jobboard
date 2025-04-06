@@ -59,6 +59,16 @@ const register = async (req,res,next) => {
         text:`Hello ${name}. We are happy to have you in out community . Hope you have best experience with our app!`
     })
 
+    res.cookie("accessToken", givenToken, {
+        maxAge: 60 * 1000,
+        httpOnly: true,
+      });
+  
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 2 * 60 * 1000,
+        httpOnly: true,
+      });
+
     // console.log("success");
 
     res.status(201).send({
@@ -108,6 +118,18 @@ const login = async (req,res,next) => {
                 algorithm:"HS256"
             }
         )
+
+        
+    res.cookie("accessToken", givenToken, {
+        maxAge: 60 * 1000,
+        httpOnly: true,
+      });
+  
+      res.cookie("refreshToken", refreshToken, {
+        maxAge: 2 * 60 * 1000,
+        httpOnly: true,
+      });
+  
     
         res.send({
             message:"success",
