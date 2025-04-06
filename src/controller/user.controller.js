@@ -3,6 +3,7 @@ import userModel from "../model/user.model.js";
 import { BaseException } from "../exception/base.exception.js";
 import jwt from "jsonwebtoken";
 import { ACCESS_TOKEN_EXPIRE_TIME, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_EXPIRE_TIME, REFRESH_TOKEN_SECRET } from "../config/jwt.config.js";
+import { sendMail } from "../utils/mail.utils.js";
 
 const getAllUsers = async (_, res) => {
     const users = await userModel.find();
@@ -51,6 +52,12 @@ const register = async (req,res,next) => {
             algorithm:"HS256"
         }
     )
+
+    await sendMail({
+        to: email,
+        subject:"Welcome",
+        text:`Hello ${name}. We are happy to have you in out community . Hope you have best experience with our app!`
+    })
 
     // console.log("success");
 

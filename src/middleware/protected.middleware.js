@@ -3,7 +3,7 @@ import { BaseException } from "../exception/base.exception.js";
 import jwt from "jsonwebtoken";
 
 export const Protected = (isProtected) =>{
-    return (req,res,next)=>{
+    return (req,_,next)=>{
         if(!isProtected){
             req.role = "VIEWER";
             return next()

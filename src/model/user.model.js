@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ROLES } from "../constants/role.constant.js";
 
 const UserSchema = new mongoose.Schema(
     {
@@ -18,8 +19,8 @@ const UserSchema = new mongoose.Schema(
         },
         role: {
             type: mongoose.SchemaTypes.String,
-            enum: ["VIEWER", "OWNER", "SUPER_ADMIN"],
-            default: "VIEWER",
+            enum: [ROLES.VIEWER, ROLES.OWNER, ROLES.SUPER_ADMIN],
+            default: ROLES.VIEWER,
           },
         jobId: {
             type: mongoose.SchemaTypes.ObjectId,
