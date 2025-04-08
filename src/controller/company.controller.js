@@ -2,44 +2,54 @@ import { BaseException } from "../exception/base.exception.js";
 import companyModel from "../model/company.model.js";
 import { isValidObjectId } from "mongoose";
 
-const getAllCompanies = async (req,res,next) => {
+
+const getAllCompanies = async (req, res, next) => {
     try {
-        const {limit=10,page=1,orderField = "_id",orderSort = 1} = req.query;
-        if(!(Number(limit) && Number(page))){
-            throw new BaseException("limit and page must be number",400)
-        };
+        const { limit = 10, page = 1, orderField = "_id", orderSort = 1, search } = req.query;
+
+        if (!(Number(limit) && Number(page))) {
+            return res.status(400).send({
+                message: "Limit and page must be numbers"
+            });
+        }
+
         if (limit <= 0 || page <= 0) {
-            throw new BaseException("limit and page must be positive numbers",400);
+            throw new BaseException("Limit and page must be positive numbers.", 400);
         }
-        const possibleFields = ["_id", "name", "createdAt","updatedAt"];
-        const possibleSorts = [1, -1]
-        if (
-            !(            
-                possibleFields.includes(orderField) &&
-                possibleSorts.includes(Number(orderSort))
-            )
-        ) {
-            throw new BaseException("sorttype yoki sortfielddan biri xato berildi",400);
-        }
-        const totalJobs = await companyModel.countDocuments();
 
-        const jobs = await companyModel.find()
+        const possibleFields = ["_id", "name", "createdAt", "updatedAt"];
+        const possibleSorts = [1, -1];
+
+        if (!(possibleFields.includes(orderField) && possibleSorts.includes(Number(orderSort)))) {
+            throw new BaseException("Invalid sort type or field.", 400);
+        }
+
+        let query = {};
+
+        if (search && search.trim() !== '') {
+            query.name = { $regex: search.trim(), $options: 'i' };
+        }
+
+        const totalCompanies = await companyModel.countDocuments(query);
+
+        const companies = await companyModel.find(query)
             .sort({ [orderField]: Number(orderSort) })
-            .skip((page - 1)* limit) 
+            .skip((page - 1) * limit)
             .limit(Number(limit))
-            .populate("companyId");
+            .populate("Jobs");
 
-        res.send({
-            message: "success",
-            data: jobs,
-            count: totalJobs,
+        res.render("companies", {
+            data: companies,
+            count: totalCompanies,
             limit: Number(limit),
-            page: Number(page)
-        })
+            page: Number(page),
+        });
+
     } catch (error) {
-        next(error)
+        next(error);
     }
 };
+
 
 const getCompany = async (req,res,next) => {
     try {

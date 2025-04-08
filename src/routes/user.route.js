@@ -31,7 +31,11 @@ userRoute
     .delete("/:id",
          Protected(true),
         Roles(ROLES.ALL),
-        userController.deleteUser);
+        userController.deleteUser)
+    .post("/forgot-password",
+        userController.forgotPassword)
+    .post("/reset-password",
+        userController.resetPassword);
 
 
 export default userRoute;

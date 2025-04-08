@@ -6,6 +6,7 @@ import { ErrorHandlerMiddleware } from "./middleware/error-handler.middleware.js
 import { BaseException } from "./exception/base.exception.js";
 import { join } from "node:path"
 import cookieParser from "cookie-parser";
+import pageRouter from "./routes/page.route.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,17 +23,14 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/uploads", express.static(join(process.cwd(), "uploads")));
 
+app.use("/",pageRouter)
 
-app.use("/api",router)
+app.use("/",router)
 // app.all("/",(_,res)=>{
-//     res.render("menu");
+//     res.render("profile");
 // })
-app.all("/*",(req,_,next) => {
-    try {
-        throw new BaseException(`Given url: ${req.url} and method : ${req.method} not found`,400)
-    } catch (error) {
-        next(error)
-    }
+app.all("/*",(req,res,next) => {
+    res.render("404")
 });
 
 app.use(ErrorHandlerMiddleware);
