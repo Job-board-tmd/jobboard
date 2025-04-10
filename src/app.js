@@ -7,11 +7,16 @@ import { BaseException } from "./exception/base.exception.js";
 import { join } from "node:path"
 import cookieParser from "cookie-parser";
 import pageRouter from "./routes/page.route.js";
+import morgan from "morgan";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express()
+
+if(process.env.NODE_ENV. trim() === "development"){
+    app.use(morgan("tiny"))
+}
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
