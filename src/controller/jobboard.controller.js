@@ -2,9 +2,11 @@ import { isValidObjectId } from "mongoose";
 import jobModel from "../model/job.model.js";
 import { BaseException } from "../exception/base.exception.js";
 
+import companyModel from "../model/company.model.js";
+
 const getAllJobs = async (req, res, next) => {
     try {
-        const { limit = 10, page = 1, orderField = "_id", orderSort = 1, search } = req.query;
+        const { limit = 10, page = 1, orderField = "_id", orderSort = 1, search,companyId } = req.query;
 
         if (!(Number(limit) && Number(page))) {
             return res.status(400).send({
@@ -26,7 +28,11 @@ const getAllJobs = async (req, res, next) => {
         let query = {};
 
         if (search && search.trim() !== '') {
-            query.name = { $regex: search.trim(), $options: 'i' }; // regex shunga o'xshagan so'zlarni olib keladi
+            query.name = { $regex: search.trim(), $options: 'i' }; 
+        }
+
+        if(companyId){
+            query.companyId = companyId;
         }
 
         const totalJobs = await jobModel.countDocuments(query);
@@ -71,25 +77,32 @@ const getOneJobs = async (req,res,next) => {
     }
 }
 
-const createJobs = async (req,res,next) => {
-    try {
-        const { name,salary,companyId } = req.body;
+const createJob = async (req, res, next) => {
+  try {
+    const { name, salary, companyId } = req.body;
 
-        const foundedJobs = await jobModel.findOne({ name },{companyId:1});
-    
-        if (foundedJobs) {
-            throw new BaseException(`Job: ${name} company:${companyId} da allaqachon mavjud`,409);
-        }
-    
-        const job = await jobModel.create({ name,salary,companyId })
-    
-        res.send({
-            message: "success",
-            data: job
-        })
-    } catch (error) {
-        next(error)
+    if (!isValidObjectId(companyId)) {
+      throw new BaseException("Noto‘g‘ri kompaniya ID", 400);
     }
+    
+    const company = await companyModel.findById(companyId);
+    if (!company) {
+      throw new BaseException("Kompaniya topilmadi", 404);
+    }
+
+    const job = await jobModel.create({ name, salary, companyId });
+
+    await companyModel.findByIdAndUpdate(companyId, {
+      $push: { Jobs: job._id }
+    });
+
+    res.status(201).send({
+      message: "Ish muvaffaqiyatli yaratildi va kompaniyaga qo‘shildi",
+      data: job
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const updateJobs = async (req,res,next) => {
@@ -139,4 +152,4 @@ const deleteJobs = async (req,res,next) => {
     }
 }
 
-export default { getAllJobs, createJobs, updateJobs, deleteJobs, getOneJobs }; 
+export default { getAllJobs, createJob, updateJobs, deleteJobs, getOneJobs }; 

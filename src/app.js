@@ -7,16 +7,24 @@ import { BaseException } from "./exception/base.exception.js";
 import { join } from "node:path"
 import cookieParser from "cookie-parser";
 import pageRouter from "./routes/page.route.js";
+<<<<<<< HEAD
 import morgan from "morgan";
+=======
+import methodOverride from "method-override";
+>>>>>>> muhiddin
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express()
 
+<<<<<<< HEAD
 if(process.env.NODE_ENV. trim() === "development"){
     app.use(morgan("tiny"))
 }
+=======
+app.use(methodOverride("_method"))
+>>>>>>> muhiddin
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))

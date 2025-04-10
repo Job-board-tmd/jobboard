@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Sidebar Example</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+
     <style>
     body {
         margin: 0;
@@ -191,9 +193,9 @@ h1 {
       <span class="corner corner-bottom"></span>
     </div>
     <ul class="nav-list">
-      <li><i class="fas fa-home"></i> Home</li>
-      <li><i class="fas fa-user"></i> Jobs</li>
-      <li class="active"><i class="fas fa-cogs"></i> Companies</li>
+      <li><a href="/users/login" style="text-decoration: none; color: #2c2c54;"><i class="fas fa-home"></i> Home</a></li>
+      <li><i class="fas fa-user"><a href="/jobs" style="text-decoration: none; color: #2c2c54;"></i> Jobs</a></li>
+      <li class="active"><a href="/companies" style="text-decoration: none; color: #2c2c54;"><i class="fas fa-cogs"></i> Companies</a></li>
       <li><i class="fas fa-briefcase"></i> Cves</li>
     </ul>
   </div>
@@ -209,19 +211,14 @@ h1 {
     <div class="job_list">
         <% if(data){ %>
             <% data.forEach((el)=>{ %>
-                <div class="job_item">
-                    <ul> 
-                        <li style="color: red; font-size: 25px;" class="job_li"><%= el.name %></li>
-                        <li class="job_li" style="font-size: medium;"><%= el.location %></li>
-                        <li class="job_li" style="font-size:small;"><%= el.createdAt.toLocaleString() %></li>
-                    </ul>
-                </div>
+                <%- include('partials/companies',{name:el.name,location:el.location,time:el.createdAt.toLocaleString(),id:el._id,imageUrl:el.imageUrl}) %>
             <% }) %>  
         <% }else{ %>
             <h1>No user found.</h1>
         <% } %>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6wUpfrr72Vsl05xl0C1VSS8g9uY8HHVBe57+klqwnpVfvz0dFZ5Q64ftIc3c0m" crossorigin="anonymous"></script>
   
 </body>
 </html>

@@ -3,7 +3,7 @@ import { Router } from "express";
 const pageRouter = Router();
 
 pageRouter.get("/", (_, res) => {
-  res.render("index");
+  res.render("menu");
 });
 
 pageRouter.get("/users/login", (_, res) => {
@@ -23,5 +23,9 @@ pageRouter.get("/users/reset-password", (req, res) => {
   console.log(token)
   res.render("reset-password", { error: null, message: null, token });
 });
+
+// pageRouter.get("/profile",(req,res)=>{
+//   res.render("profile",{data:null})
+// })
 
 export default pageRouter;
