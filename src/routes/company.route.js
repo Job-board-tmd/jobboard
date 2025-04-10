@@ -14,8 +14,8 @@ companyRouter.get("/",
     companyController.getAllCompanies)
     .post(
         "/",
-        Protected(true),
-        Roles(ROLES.OWNER,ROLES.SUPER_ADMIN),
+        // Protected(true),
+        // Roles(ROLES.OWNER,ROLES.SUPER_ADMIN),
         upload.single("image"),
         ValidationMiddleware(createCompanySchema),
         companyController.createCompany)

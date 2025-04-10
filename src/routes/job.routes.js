@@ -19,7 +19,7 @@ jobRouter
         Protected(true),
         Roles(ROLES.OWNER,ROLES.SUPER_ADMIN),
         ValidationMiddleware(createJobSchema),
-         jobboardController.createJobs)
+         jobboardController.createJob)
     .put(
         "/:id",
         Protected(true),
@@ -27,7 +27,7 @@ jobRouter
         ValidationMiddleware(updateJobSchema), 
         jobboardController.updateJobs)
     .delete("/:id",
-        Roles(ROLES.OWNER,ROLES.SUPER_ADMIN),
+        Roles(ROLES.OWNER,ROLES.SUPER_ADMIN,ROLES.VIEWER),
         Protected(true),
          jobboardController.deleteJobs);
 

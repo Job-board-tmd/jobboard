@@ -5,7 +5,6 @@ import { BaseException } from "../exception/base.exception.js";
 import jwt from "jsonwebtoken";
 import { ACCESS_TOKEN_EXPIRE_TIME, ACCESS_TOKEN_SECRET, REFRESH_TOKEN_EXPIRE_TIME, REFRESH_TOKEN_SECRET } from "../config/jwt.config.js";
 import { sendMail } from "../utils/mail.utils.js";
-import { error } from "node:console";
 
 const getAllUsers = async (_, res) => {
     const users = await userModel.find();
@@ -129,7 +128,7 @@ const login = async (req,res,next) => {
         httpOnly: true,
       });
 
-      res.render("profile",{data:foundedUser})
+      return res.render("profile",{data:foundedUser})
 
   
     
@@ -174,10 +173,11 @@ const deleteUser = async (req, res,next) => {
         if (!user) {
             throw new BaseException("User not found",404);
         }
-        res.send({
-            message: "success",
-            data: user,
-        });
+        // res.send({
+        //     message: "success",
+        //     data: user,
+        // });
+        res.render("menu")
     } catch (error) {
         next(error)
     }
@@ -228,9 +228,9 @@ const forgotPassword = async (req, res, next) => {
       const { token } = req.query;
       console.log(token);
   
-    //   if (!token) {
-    //     return res.redirect("/users/login");
-    //   }
+      if (!token) {
+        return res.redirect("/users/login");
+      }
   
       const user = await userModel.findOne({ token });
   

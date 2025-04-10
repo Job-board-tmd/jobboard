@@ -23,6 +23,9 @@ const getAllCompanies = async (req, res, next) => {
         if (!(possibleFields.includes(orderField) && possibleSorts.includes(Number(orderSort)))) {
             throw new BaseException("Invalid sort type or field.", 400);
         }
+        const company = await companyModel.findOne();
+        console.log(company.Jobs); // Check if it's an array of ObjectIds
+        
 
         let query = {};
 
@@ -43,7 +46,7 @@ const getAllCompanies = async (req, res, next) => {
             count: totalCompanies,
             limit: Number(limit),
             page: Number(page),
-        });
+        })
 
     } catch (error) {
         next(error);
@@ -76,13 +79,7 @@ const getCompany = async (req,res,next) => {
 
 const createCompany = async (req,res,next) => {
     try {
-        const {name,location} = req.body;
-        const foundedCompanies = await companyModel.findOne({ name });
-    
-        if (foundedCompanies) {
-            throw new BaseException(`company: ${name} allaqachon mavjud`,409);
-        }
-    
+        const {name,location} = req.body;    
         const company = await companyModel.create({name,
             location,
             imageUrl: req.file.filename})
