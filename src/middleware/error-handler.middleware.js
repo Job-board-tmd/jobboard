@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-import logger from "../config/winston.config.js";
+import logger from "../config/winston.config.js"
 
-export const ErrorHandlerMiddleware = (err, _, res, __) => {
-  logger.error(err)
-=======
 function dublicateFieldError(err) {
   if (err?.code === 11000) {
     err.status = 409;
@@ -19,15 +15,17 @@ function dublicateFieldError(err) {
 
 
 export const ErrorHandlerMiddleware = (err, _, res, __) => {
+  logger.error(err)
+
+
   err = dublicateFieldError(err);
 
->>>>>>> muhiddin
   if (err.isException) {
     return res.status(err.status).send({
       message: err.message,
     });
   }
-// console.log(err)
+
   res.status(500).send({
     message: err,
   });
