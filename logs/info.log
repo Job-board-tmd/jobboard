@@ -1,3 +1,9 @@
 {"level":"error","timestamp":"2025-04-10 13:53"}
 {"level":"error","path":"C:\\Users\\CPU_20240930\\Desktop\\jobboard\\src\\views\\login.ejs","timestamp":"2025-04-10 13:55"}
 {"isException":true,"level":"error","status":404,"timestamp":"2025-04-10 13:55"}
+{"level":"error","timestamp":"2025-04-10 15:44"}
+{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: jobBoard.users index: name_1 dup key: { name: \"Iroda\" }","index":0,"keyPattern":{"name":1},"keyValue":{"name":"Iroda"}},"index":0,"keyPattern":{"name":1},"keyValue":{"name":"Iroda"},"level":"error","timestamp":"2025-04-10 15:46"}
+{"code":11000,"errorLabelSet":{},"errorResponse":{"code":11000,"errmsg":"E11000 duplicate key error collection: jobBoard.users index: name_1 dup key: { name: \"Iroda\" }","index":0,"keyPattern":{"name":1},"keyValue":{"name":"Iroda"}},"index":0,"keyPattern":{"name":1},"keyValue":{"name":"Iroda"},"level":"error","timestamp":"2025-04-10 15:47"}
+{"level":"error","timestamp":"2025-04-10 15:56"}
+{"level":"error","timestamp":"2025-04-10 15:56"}
+{"level":"error","timestamp":"2025-04-10 15:58"}

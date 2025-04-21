@@ -177,7 +177,7 @@ const deleteUser = async (req, res,next) => {
         //     message: "success",
         //     data: user,
         // });
-        res.redirect("/users/login")
+        res.redirect("/users/register")
     } catch (error) {
         next(error)
     }

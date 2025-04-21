@@ -24,7 +24,7 @@ const getAllCompanies = async (req, res, next) => {
             throw new BaseException("Invalid sort type or field.", 400);
         }
         const company = await companyModel.findOne();
-        console.log(company.Jobs); // Check if it's an array of ObjectIds
+        console.log(company.Jobs); 
         
 
         let query = {};
