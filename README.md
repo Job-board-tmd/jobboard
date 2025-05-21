@@ -24,15 +24,13 @@
 1. Job:
     - id
     - name
+    - salary
     - createdAt
     - updatedAt
 
 2. Company:
     - id 
     - name
-    - price
-    - description
-    - imageUrl
     - job_id
     - createdAt
     - updatedAt
@@ -41,7 +39,6 @@
     - id 
     - name
     - email
-    - imageUrl
     - createdAT
     - updatedAt
 
