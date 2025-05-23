@@ -26,5 +26,4 @@ jobs:
             npm i
             pm2 restart j || pm2 start main.js --name test
           EOF
-
           
